@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-dns-watch — Live DNS dashboard for Technitium DNS Server
+dns-watch: Live DNS dashboard for Technitium DNS Server
 https://github.com/runnyroosts/dns-watch
 """
 
@@ -178,7 +178,7 @@ class SetupForm:
         self._form_label(frame, 'Technitium admin password', 5)
         self._f_tn_pass = self._form_entry(frame, 5, show='*')
 
-        # DB path selector — start the preset on whatever matches the saved path
+        # DB path selector: start the preset on whatever matches the saved path
         self._form_label(frame, 'Database location', 6)
         saved_db = cfg.get('db_path', DB_PRESETS[0][1])
         preset_label = next((name for name, path in DB_PRESETS
@@ -249,7 +249,7 @@ class SetupForm:
         if mode == 'local':
             self._set_status('Fetching Technitium API token locally…')
             try:
-                # urllib keeps the password in-process — not in any curl argv
+                # urllib keeps the password in-process, not in any curl argv
                 qs = urllib.parse.urlencode(
                     {'user': tn_user, 'pass': tn_pass, 'includeInfo': 'true'})
                 with urllib.request.urlopen(
@@ -345,7 +345,7 @@ class SetupForm:
         self._status_lbl.after(800, self._finish)
 
 
-# ── Setup window (first run — standalone Tk root) ─────────────────────────────
+# ── Setup window (first run, standalone Tk root) ─────────────────────────────
 
 class SetupWindow(SetupForm, tk.Tk):
     def __init__(self, existing_config=None):
@@ -364,7 +364,7 @@ class SetupWindow(SetupForm, tk.Tk):
         self.quit()
 
 
-# ── Settings dialog (from the running app — modal Toplevel) ───────────────────
+# ── Settings dialog (from the running app, modal Toplevel) ───────────────────
 
 class SettingsDialog(SetupForm, tk.Toplevel):
     def __init__(self, parent, existing_config=None):
@@ -391,7 +391,7 @@ class DnsWatch(tk.Tk):
         super().__init__()
         self._cfg = cfg
         host = cfg.get('host', 'localhost')
-        self.title(f"DNS Watch — {host}")
+        self.title(f"DNS Watch: {host}")
         self.geometry('1300x720')
         self.configure(bg=C_BG)
         self.minsize(900, 500)
@@ -521,7 +521,7 @@ class DnsWatch(tk.Tk):
         if dlg.result:
             self._cfg = dlg.result
             self._max_rows = int(self._cfg.get('max_rows', MAX_ROWS))
-            self.title(f"DNS Watch — {self._cfg.get('host', 'localhost')}")
+            self.title(f"DNS Watch: {self._cfg.get('host', 'localhost')}")
 
     def _start_poll(self):
         threading.Thread(target=self._poll_worker, daemon=True).start()
