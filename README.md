@@ -2,7 +2,7 @@
 
 A live DNS query dashboard for [Technitium DNS Server](https://technitium.com/dns/). Built for **Linux (Debian/Ubuntu)**.
 
-Shows all DNS queries in real time — upstream resolves, cache hits, and blocked domains — color coded. Font size is adjustable live from the toolbar so the display works comfortably at any distance or screen size.
+Shows all DNS queries in real time (upstream resolves, cache hits, and blocked domains), color coded. Font size is adjustable live from the toolbar so the display works comfortably at any distance or screen size.
 
 ![dns-watch dashboard](Screenshot-dshboard.png)
 
@@ -10,7 +10,7 @@ Shows all DNS queries in real time — upstream resolves, cache hits, and blocke
 
 ## Requirements
 
-- **Linux — Debian or Ubuntu based** (tested on Debian 13). Other distros may work but are untested.
+- **Linux, Debian or Ubuntu based** (tested on Debian 13). Other distros may work but are untested.
 - Technitium DNS Server running on a reachable machine (Raspberry Pi, Linux box, etc.)
 - The **Query Logs (Sqlite)** app installed in Technitium (Apps tab in the web console)
 - SSH access to the machine running Technitium (remote mode) or running locally on the same machine
@@ -35,11 +35,11 @@ Or find **DNS Watch** in your app menu.
 
 On first launch, a setup dialog will appear asking for:
 
-- **Host IP** — the IP address of your Technitium machine
-- **SSH username** — usually `pi` on a Raspberry Pi
-- **SSH password** — used once to set up passwordless key auth, never stored
-- **Technitium admin credentials** — to fetch an API token
-- **Database location** — choose from common presets or enter a custom path
+- **Host IP**: the IP address of your Technitium machine
+- **SSH username**: usually `pi` on a Raspberry Pi
+- **SSH password**: used once to set up passwordless key auth, never stored
+- **Technitium admin credentials**: to fetch an API token
+- **Database location**: choose from common presets or enter a custom path
 
 After setup, dns-watch connects automatically with no passwords required.
 
@@ -49,10 +49,10 @@ Settings can be re-run anytime via the ⚙ button in the top bar.
 
 | Color  | Meaning  |
 |--------|----------|
-| Green  | Upstream — fresh DNS resolve |
-| Blue   | Cached — served from Technitium cache |
-| Red    | Blocked — sinkholed by a block list |
-| Orange | Other — ServFail, Refused, etc. |
+| Green  | Upstream: fresh DNS resolve |
+| Blue   | Cached: served from Technitium cache |
+| Red    | Blocked: sinkholed by a block list |
+| Orange | Other: ServFail, Refused, etc. |
 
 ## Technitium setup
 
@@ -64,4 +64,4 @@ Settings are stored at `~/.config/dns-watch/config.json`. Delete this file to re
 
 ## License
 
-GNU General Public License v3.0 — free to use and modify, but any distributed version or product built on this must remain open source under the same license. See [LICENSE](LICENSE) for details.
+GNU General Public License v3.0: free to use and modify, but any distributed version or product built on this must remain open source under the same license. See [LICENSE](LICENSE) for details.
