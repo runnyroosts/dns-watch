@@ -1,6 +1,6 @@
 # dns-watch
 
-A live DNS query dashboard for [Technitium DNS Server](https://technitium.com/dns/).
+A live DNS query dashboard for [Technitium DNS Server](https://technitium.com/dns/). Built for **Linux (Debian/Ubuntu)**.
 
 Shows all DNS queries in real time — upstream resolves, cache hits, and blocked domains — color coded. Font size is adjustable live from the toolbar so the display works comfortably at any distance or screen size.
 
@@ -10,10 +10,10 @@ Shows all DNS queries in real time — upstream resolves, cache hits, and blocke
 
 ## Requirements
 
-- Linux (Debian/Ubuntu)
+- **Linux — Debian or Ubuntu based** (tested on Debian 13). Other distros may work but are untested.
 - Technitium DNS Server running on a reachable machine (Raspberry Pi, Linux box, etc.)
 - The **Query Logs (Sqlite)** app installed in Technitium (Apps tab in the web console)
-- SSH access to the machine running Technitium
+- SSH access to the machine running Technitium (remote mode) or running locally on the same machine
 
 ## Install
 
