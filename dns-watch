@@ -10,6 +10,8 @@ import threading
 import time
 import os
 import json
+import urllib.request
+import urllib.parse
 from datetime import datetime
 import tkinter as tk
 from tkinter import ttk
@@ -58,9 +60,14 @@ def load_config():
     return None
 
 def save_config(cfg):
+    # Lock the dir, then create the file 0600 from the start so the stored
+    # Technitium token is never even briefly readable by other accounts.
     os.makedirs(CONFIG_DIR, exist_ok=True)
-    with open(CONFIG_FILE, 'w') as f:
+    os.chmod(CONFIG_DIR, 0o700)
+    fd = os.open(CONFIG_FILE, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, 'w') as f:
         json.dump(cfg, f, indent=2)
+    os.chmod(CONFIG_FILE, 0o600)
 
 
 # ── DB query ──────────────────────────────────────────────────────────────────
@@ -242,12 +249,12 @@ class SetupForm:
         if mode == 'local':
             self._set_status('Fetching Technitium API token locally…')
             try:
-                r = subprocess.run(
-                    ['curl', '-s', f'http://localhost:5380/api/user/login?'
-                     f'user={tn_user}&pass={tn_pass}&includeInfo=true'],
-                    capture_output=True, text=True, timeout=10
-                )
-                token = json.loads(r.stdout).get('token')
+                # urllib keeps the password in-process — not in any curl argv
+                qs = urllib.parse.urlencode(
+                    {'user': tn_user, 'pass': tn_pass, 'includeInfo': 'true'})
+                with urllib.request.urlopen(
+                        f'http://localhost:5380/api/user/login?{qs}', timeout=10) as resp:
+                    token = json.loads(resp.read().decode()).get('token')
                 if not token:
                     self._set_status('Could not get Technitium token. Check credentials.', C_RED)
                     return
@@ -303,18 +310,23 @@ class SetupForm:
             stdout.channel.recv_exit_status()
 
             self._set_status('Adding sqlite3 sudo permission…')
-            _, stdout, _ = client.exec_command(
-                f'echo "{ssh_pass}" | sudo -S bash -c '
+            # feed the SSH password to sudo via stdin, not the command argv
+            stdin, stdout, _ = client.exec_command(
+                'sudo -S bash -c '
                 f'"echo \'{ssh_user} ALL=(ALL) NOPASSWD: /usr/bin/sqlite3\' '
-                f'> /etc/sudoers.d/dns-watch-sqlite3"'
+                '> /etc/sudoers.d/dns-watch-sqlite3"'
             )
+            stdin.write(ssh_pass + '\n')
+            stdin.channel.shutdown_write()
             stdout.channel.recv_exit_status()
 
             self._set_status('Fetching Technitium API token…')
-            _, stdout, _ = client.exec_command(
-                f'curl -s "http://localhost:5380/api/user/login?'
-                f'user={tn_user}&pass={tn_pass}&includeInfo=true"'
-            )
+            # pass the URL (with creds) to curl via stdin config, not argv
+            qs = urllib.parse.urlencode(
+                {'user': tn_user, 'pass': tn_pass, 'includeInfo': 'true'})
+            stdin, stdout, _ = client.exec_command('curl -s -K -')
+            stdin.write(f'url = "http://localhost:5380/api/user/login?{qs}"\n')
+            stdin.channel.shutdown_write()
             token = json.loads(stdout.read().decode()).get('token')
             if not token:
                 self._set_status('Could not get Technitium token. Check credentials.', C_RED)
