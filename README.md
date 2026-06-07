@@ -61,3 +61,7 @@ In the Technitium web console, go to **Apps** and install **Query Logs (Sqlite)*
 ## Config file
 
 Settings are stored at `~/.config/dns-watch/config.json`. Delete this file to re-run setup.
+
+## License
+
+GNU General Public License v3.0 — free to use and modify, but any distributed version or product built on this must remain open source under the same license. See [LICENSE](LICENSE) for details.
